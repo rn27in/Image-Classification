@@ -32,11 +32,11 @@ def load_data(path_to_file):
 
     return(train,test)
 
-trainx,testx = load_data(path_to_file= "/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/a0409a00-8-dataset_dp/")
+trainx,testx = load_data(path_to_file= "../")
 
-path_source = '/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/a0409a00-8-dataset_dp/train_img/'
+path_source = '../train_img/'
 list_train_pics = os.listdir(path_source)
-subs_images_dir = '/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/a0409a00-8-dataset_dp/test_img/'
+subs_images_dir = '../test_img/'
 subs_images_files = os.listdir(subs_images_dir)
 
 def dictionaries(train, list_train_pics):
@@ -148,30 +148,30 @@ train_datagen = ImageDataGenerator()
 train_datagen.fit(final_data_img)
 train_generator = train_datagen.flow(final_data_img, final_labels_keras, batch_size=BATCH_SIZE)
 
+####This code has to be run initially to get some initial weights and then again to fine tune the weights################
 start = time.time()
 hist = train_model(10, train_generator)
 end = time.time()
 
 ##########Saving model to disk#############################################################
 model_json = model.to_json()
-with open("/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/a0409a00-8-dataset_dp/Dumps_for_Models/Fine_Tuned/model_VGG16_10epochs.json", "w") as json_file:
+with open("../Fine_Tuned/model_VGG16_10epochs.json", "w") as json_file:
     json_file.write(model_json)
 # serialize weights to HDF5
-model.save_weights("/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/a0409a00-8-dataset_dp/Dumps_for_Models/Fine_Tuned/model_no_augmentation_all_train_VGG16_10epochs.h5")
+model.save_weights("../model_no_augmentation_all_train_VGG16_10epochs.h5")
 print("Saved model to disk")
 
-
-
-
+################We start the fine tuning for VGG 16 now################################################
 ##############Loading model from Disk###########################################################
-json_file = open('/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/a0409a00-8-dataset_dp/Dumps_for_Models/model_VGG16.json', 'r')
+json_file = open('../model_VGG16.json', 'r')
 model = json_file.read()
 json_file.close()
 model = model_from_json(model)
 # load weights into new model
-model.load_weights("/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/a0409a00-8-dataset_dp/Dumps_for_Models/model_no_augmentation_all_train_VGG16.h5")
+model.load_weights("../model_no_augmentation_all_train_VGG16.h5")
 print("Loaded model from disk")
 
+#################
 ########Check for the layers#####################
 
 for i, layer in enumerate(model.layers):
@@ -211,32 +211,23 @@ train_generator = train_datagen.flow(final_data_img, final_labels_keras, batch_s
 
 
 start = time.time()
-hist = train_model(7, train_generator)
+hist = train_model(10, train_generator)
 end = time.time()
 
 start = time.time()
 preds_subs = model.predict(subs_img, verbose = 1)
 end = time.time()
 
-preds_subs_resnet50 = joblib.load('/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/a0409a00-8-dataset_dp/Dumps_for_Models/Fine_Tuned/pred_subs_Resnet50')
-
-preds_subs_weighted =  0.68 *(preds_subs_resnet50) + 0.59*(preds_subs) ##0.71882####
-
-preds_subs_weighted =  0.75 *(preds_subs_resnet50) + 0.5*(preds_subs)##0.71940#####
-
-preds_subs_weighted = preds_subs_weighted/1.27
-
-preds_subs_weighted = preds_subs_weighted/1.25  ##0.71940#####
-preds_subs_final = np.argmax(preds_subs_weighted, axis = 1)
+preds_subs_final = np.argmax(preds_subs, axis = 1)
 
 model_json = model.to_json()
-with open("/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/a0409a00-8-dataset_dp/Dumps_for_Models/Fine_Tuned/model_Resnet50_fine_tuned.json", "w") as json_file:
+with open("../Fine_Tuned/model_Resnet50_fine_tuned.json", "w") as json_file:
     json_file.write(model_json)
 # serialize weights to HDF5
-model.save_weights("/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/a0409a00-8-dataset_dp/Dumps_for_Models/Fine_Tuned/model_no_augmentation_all_train_Resnet50_fine_tuned.h5")
+model.save_weights("../Fine_Tuned/model_no_augmentation_all_train_Resnet50_fine_tuned.h5")
 print("Saved model to disk")
 
-joblib.dump(preds_subs,'/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/a0409a00-8-dataset_dp/Dumps_for_Models/Fine_Tuned/pred_subs_Resnet50')
+joblib.dump(preds_subs,'../Fine_Tuned/pred_subs_Resnet50')
 
 preds_subs_final = np.argmax(preds_subs, axis = 1)
 preds_subs_final.shape
@@ -256,8 +247,8 @@ def results_to_be_submitted(test,result_subs , path,name_of_file_sub):
     results_submitted.to_csv(filename,index = False)
 
 ########0.68187###################
-results_to_be_submitted(test = testx,result_subs = preds_subs_final  ,path = '/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/Submissions/',
-                        name_of_file_sub = "Fine_tuning_cnn_VGG16_Resnet50_diff_weights_10epochs") ##55.6% accuracy
+results_to_be_submitted(test = testx,result_subs = preds_subs_final  ,path = '../Submissions/',
+                        name_of_file_sub = "Fine_tuning_cnn_VGG16_weights_10epochs") ##55.6% accuracy
 
 
-#######################End of Fine Tuning for Resnet50#########################################
+#######################End of Fine Tuning for VGG16#########################################
