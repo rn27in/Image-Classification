@@ -221,13 +221,13 @@ end = time.time()
 preds_subs_final = np.argmax(preds_subs, axis = 1)
 
 model_json = model.to_json()
-with open("../Fine_Tuned/model_Resnet50_fine_tuned.json", "w") as json_file:
+with open("../Fine_Tuned/model_VGG16_fine_tuned.json", "w") as json_file:
     json_file.write(model_json)
 # serialize weights to HDF5
-model.save_weights("../Fine_Tuned/model_no_augmentation_all_train_Resnet50_fine_tuned.h5")
+model.save_weights("../Fine_Tuned/model_no_augmentation_all_train_VGG16_fine_tuned.h5")
 print("Saved model to disk")
 
-joblib.dump(preds_subs,'../Fine_Tuned/pred_subs_Resnet50')
+joblib.dump(preds_subs,'../Fine_Tuned/pred_subs_VGG16')
 
 preds_subs_final = np.argmax(preds_subs, axis = 1)
 preds_subs_final.shape
