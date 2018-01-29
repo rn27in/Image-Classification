@@ -32,11 +32,11 @@ def load_data(path_to_file):
 
     return(train,test)
 
-trainx,testx = load_data(path_to_file= "/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/a0409a00-8-dataset_dp/")
+trainx,testx = load_data(path_to_file= "../")
 
-path_source = '/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/a0409a00-8-dataset_dp/train_img/'
+path_source = '../train_img/'
 list_train_pics = os.listdir(path_source)
-subs_images_dir = '/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/a0409a00-8-dataset_dp/test_img/'
+subs_images_dir = '../test_img/'
 subs_images_files = os.listdir(subs_images_dir)
 
 def dictionaries(train, list_train_pics):
@@ -154,10 +154,10 @@ end = time.time()
 
 ##########Saving model to disk#############################################################
 model_json = model.to_json()
-with open("/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/a0409a00-8-dataset_dp/Dumps_for_Models/Fine_Tuned/model_VGG19_10epochs.json", "w") as json_file:
+with open("../model_VGG19_10epochs.json", "w") as json_file:
     json_file.write(model_json)
 # serialize weights to HDF5
-model.save_weights("/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/a0409a00-8-dataset_dp/Dumps_for_Models/Fine_Tuned/model_no_augmentation_all_train_VGG19_10epochs.h5")
+model.save_weights("../model_no_augmentation_all_train_VGG19_10epochs.h5")
 print("Saved model to disk")
 
 
@@ -166,22 +166,22 @@ start = time.time()
 pred_test = model.predict(subs_img, verbose= 1)
 end = time.time()
 
-joblib.dump(pred_test,'/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/a0409a00-8-dataset_dp/Dumps_for_Models/pred_test_VGG19' )
+joblib.dump(pred_test,'../pred_test_VGG19' )
 preds_subs_final = np.argmax(pred_test, axis = 1)
 
-results_to_be_submitted(test = testx,result_subs = preds_subs_final  ,path = '/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/Submissions/',
+results_to_be_submitted(test = testx,result_subs = preds_subs_final  ,path = '../Submissions/',
                         name_of_file_sub = "results_vgg19") ##55.6% accuracy
 
 
 
 
 ##############Loading model from Disk###########################################################
-json_file = open('/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/a0409a00-8-dataset_dp/Dumps_for_Models/Fine_Tuned/model_VGG19_10epochs.json', 'r')
+json_file = open('../model_VGG19_10epochs.json', 'r')
 model = json_file.read()
 json_file.close()
 model = model_from_json(model)
 # load weights into new model
-model.load_weights("/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/a0409a00-8-dataset_dp/Dumps_for_Models/Fine_Tuned/model_no_augmentation_all_train_VGG19_10epochs.h5")
+model.load_weights("../model_no_augmentation_all_train_VGG19_10epochs.h5")
 print("Loaded model from disk")
 
 ########Check for the layers#####################
@@ -235,7 +235,7 @@ end = time.time()
 preds_subs_final = np.argmax(preds_subs, axis = 1)
 
 
-joblib.dump(preds_subs,'/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/a0409a00-8-dataset_dp/Dumps_for_Models/Fine_Tuned/pred_subs_VGG19')
+joblib.dump(preds_subs,'../pred_subs_VGG19')
 
 #np.sum(pred_test_final == np.array(label_test))/(1.0 * len(pred_test_final))
 
@@ -253,7 +253,7 @@ def results_to_be_submitted(test,result_subs , path,name_of_file_sub):
     results_submitted.to_csv(filename,index = False)
 
 ########0.68187###################
-results_to_be_submitted(test = testx,result_subs = preds_subs_final  ,path = '/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/Submissions/',
+results_to_be_submitted(test = testx,result_subs = preds_subs_final  ,path = '../Submissions/',
                         name_of_file_sub = "Fine_tuning_cnn_VGG19_10epochs") ##55.6% accuracy
 
 
