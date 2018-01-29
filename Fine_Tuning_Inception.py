@@ -33,11 +33,11 @@ def load_data(path_to_file):
 
     return(train,test)
 
-trainx,testx = load_data(path_to_file= "/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/a0409a00-8-dataset_dp/")
+trainx,testx = load_data(path_to_file= "../")
 
-path_source = '/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/a0409a00-8-dataset_dp/train_img/'
+path_source = '../train_img/'
 list_train_pics = os.listdir(path_source)
-subs_images_dir = '/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/a0409a00-8-dataset_dp/test_img/'
+subs_images_dir = '../test_img/'
 subs_images_files = os.listdir(subs_images_dir)
 
 def dictionaries(train, list_train_pics):
@@ -158,10 +158,10 @@ hist = train_model(10, train_generator)
 end = time.time()
 
 model_json = model.to_json()
-with open("/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/a0409a00-8-dataset_dp/Dumps_for_Models/model_InceptionV3_10epochs.json", "w") as json_file:
+with open("../model_InceptionV3_10epochs.json", "w") as json_file:
     json_file.write(model_json)
 # serialize weights to HDF5
-model.save_weights("/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/a0409a00-8-dataset_dp/Dumps_for_Models/model_no_augmentation_all_train_InceptionV3_10epochs.h5")
+model.save_weights("../model_no_augmentation_all_train_InceptionV3_10epochs.h5")
 print("Saved model to disk")
 
 
@@ -170,7 +170,7 @@ start = time.time()
 pred_subs = model.predict(subs_img, verbose= 1)
 end = time.time()
 
-joblib.dump(pred_subs, '/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/a0409a00-8-dataset_dp/Dumps_for_Models/pred_test_InceptionV3')
+joblib.dump(pred_subs, '../pred_test_InceptionV3')
 
 def results_to_be_submitted(test,result_subs , path,name_of_file_sub):
     filename = path+name_of_file_sub+'.csv'
@@ -185,16 +185,16 @@ def results_to_be_submitted(test,result_subs , path,name_of_file_sub):
 
 preds_subs_final = np.argmax(pred_subs, axis = 1)
 
-results_to_be_submitted(test = testx,result_subs = preds_subs_final  ,path = '/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/Submissions/',
+results_to_be_submitted(test = testx,result_subs = preds_subs_final  ,path = '../Submissions/',
                         name_of_file_sub = "results_InceptionV3") ##55.6% accuracy
 
 ##############################Fine Tuning#######################################################################
-json_file = open('/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/a0409a00-8-dataset_dp/Dumps_for_Models/model_InceptionV3_10epochs.json', 'r')
+json_file = open('../model_InceptionV3_10epochs.json', 'r')
 model = json_file.read()
 json_file.close()
 model = model_from_json(model)
 # load weights into new model
-model.load_weights("/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/a0409a00-8-dataset_dp/Dumps_for_Models/model_no_augmentation_all_train_InceptionV3_10epochs.h5")
+model.load_weights("../model_no_augmentation_all_train_InceptionV3_10epochs.h5")
 print("Loaded model from disk")
 
 for i, layer in enumerate(model.layers):
@@ -233,10 +233,10 @@ hist = train_model(10, train_generator)
 end = time.time()
 
 model_json = model.to_json()
-with open("/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/a0409a00-8-dataset_dp/Dumps_for_Models/Fine_Tuned/model_InceptionV3_10epochs.json", "w") as json_file:
+with open("../model_InceptionV3_10epochs.json", "w") as json_file:
     json_file.write(model_json)
 # serialize weights to HDF5
-model.save_weights("/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/a0409a00-8-dataset_dp/Dumps_for_Models/Fine_Tuned/model_no_augmentation_all_train_InceptionV3_10epochs.h5")
+model.save_weights("../model_no_augmentation_all_train_InceptionV3_10epochs.h5")
 print("Saved model to disk")
 
 
@@ -244,7 +244,7 @@ start = time.time()
 pred_subs = model.predict(subs_img, verbose= 1)
 end = time.time()
 
-joblib.dump(pred_subs, '/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/a0409a00-8-dataset_dp/Dumps_for_Models/pred_subs_InceptionV3')
+joblib.dump(pred_subs, '../pred_subs_InceptionV3')
 
 def results_to_be_submitted(test,result_subs , path,name_of_file_sub):
     filename = path+name_of_file_sub+'.csv'
@@ -259,8 +259,8 @@ def results_to_be_submitted(test,result_subs , path,name_of_file_sub):
 
 preds_subs_final = np.argmax(pred_subs, axis = 1)
 
-results_to_be_submitted(test = testx,result_subs = preds_subs_final  ,path = '/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/Submissions/',
+results_to_be_submitted(test = testx,result_subs = preds_subs_final  ,path = '../Submissions/',
                         name_of_file_sub = "fine_tuned_results_InceptionV3") ##55.6% accuracy
 
-joblib.dump(preds_subs_final, '/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/a0409a00-8-dataset_dp/Dumps_for_Models/Fine_Tuned/preds_subs_final_xception')
+joblib.dump(preds_subs_final, '../preds_subs_final_xception')
 
