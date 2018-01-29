@@ -32,11 +32,11 @@ def load_data(path_to_file):
 
     return(train,test)
 
-trainx,testx = load_data(path_to_file= "/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/a0409a00-8-dataset_dp/")
+trainx,testx = load_data(path_to_file= "../")
 
-path_source = '/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/a0409a00-8-dataset_dp/train_img/'
+path_source = '../train_img/'
 list_train_pics = os.listdir(path_source)
-subs_images_dir = '/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/a0409a00-8-dataset_dp/test_img/'
+subs_images_dir = '../test_img/'
 subs_images_files = os.listdir(subs_images_dir)
 
 def dictionaries(train, list_train_pics):
@@ -156,22 +156,22 @@ end = time.time()
 
 ##########Saving model to disk#############################################################
 model_json = model.to_json()
-with open("/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/a0409a00-8-dataset_dp/Dumps_for_Models/model_Resnet50.json", "w") as json_file:
+with open("../model_Resnet50.json", "w") as json_file:
     json_file.write(model_json)
 # serialize weights to HDF5
-model.save_weights("/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/a0409a00-8-dataset_dp/Dumps_for_Models/model_no_augmentation_all_train_Resnet50.h5")
+model.save_weights("../model_no_augmentation_all_train_Resnet50.h5")
 print("Saved model to disk")
 
 
 
-
+#############################Fine Tuning######################
 ##############Loading model from Disk###########################################################
-json_file = open('/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/a0409a00-8-dataset_dp/Dumps_for_Models/model_Resnet50.json', 'r')
+json_file = open('../model_Resnet50.json', 'r')
 model = json_file.read()
 json_file.close()
 model = model_from_json(model)
 # load weights into new model
-model.load_weights("/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/a0409a00-8-dataset_dp/Dumps_for_Models/model_no_augmentation_all_train_Resnet50.h5")
+model.load_weights("../model_no_augmentation_all_train_Resnet50.h5")
 print("Loaded model from disk")
 
 ########Check for the layers#####################
@@ -222,13 +222,13 @@ end = time.time()
 
 
 model_json = model.to_json()
-with open("/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/a0409a00-8-dataset_dp/Dumps_for_Models/Fine_Tuned/model_Resnet50_fine_tuned.json", "w") as json_file:
+with open("../model_Resnet50_fine_tuned.json", "w") as json_file:
     json_file.write(model_json)
 # serialize weights to HDF5
-model.save_weights("/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/a0409a00-8-dataset_dp/Dumps_for_Models/Fine_Tuned/model_no_augmentation_all_train_Resnet50_fine_tuned.h5")
+model.save_weights("../model_no_augmentation_all_train_Resnet50_fine_tuned.h5")
 print("Saved model to disk")
 
-joblib.dump(preds_subs,'/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/a0409a00-8-dataset_dp/Dumps_for_Models/Fine_Tuned/pred_subs_Resnet50')
+joblib.dump(preds_subs,'../pred_subs_Resnet50')
 
 preds_subs_final = np.argmax(preds_subs, axis = 1)
 #np.sum(pred_test_final == np.array(label_test))/(1.0 * len(pred_test_final))
@@ -247,7 +247,7 @@ def results_to_be_submitted(test,result_subs , path,name_of_file_sub):
     results_submitted.to_csv(filename,index = False)
 
 ########0.68187###################
-results_to_be_submitted(test = testx,result_subs = preds_subs_final  ,path = '/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/Submissions/',
+results_to_be_submitted(test = testx,result_subs = preds_subs_final  ,path = '../Submissions/',
                         name_of_file_sub = "Fine_tuning_cnn_Resnet50") ##55.6% accuracy
 
 
