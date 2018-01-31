@@ -33,11 +33,11 @@ def load_data(path_to_file):
 
     return(train,test)
 
-trainx,testx = load_data(path_to_file= "/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/a0409a00-8-dataset_dp/")
+trainx,testx = load_data(path_to_file= "../")
 
-path_source = '/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/a0409a00-8-dataset_dp/train_img/'
+path_source = '../train_img/'
 list_train_pics = os.listdir(path_source)
-subs_images_dir = '/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/a0409a00-8-dataset_dp/test_img/'
+subs_images_dir = '../test_img/'
 subs_images_files = os.listdir(subs_images_dir)
 
 def dictionaries(train, list_train_pics):
@@ -92,16 +92,16 @@ subs_img = np.array(subs_img)
 subs_img = subs_img/255.0
 
 
-pred_resnet50 = joblib.load('/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/a0409a00-8-dataset_dp/Dumps_for_Models/Fine_Tuned/pred_subs_Resnet50')
-pred_xception = joblib.load('/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/a0409a00-8-dataset_dp/Dumps_for_Models/Fine_Tuned/preds_subs_final_xception')
-pred_inception = joblib.load('/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/a0409a00-8-dataset_dp/Dumps_for_Models/Fine_Tuned/pred_test_xception')
-pred_vgg16 = joblib.load('/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/a0409a00-8-dataset_dp/Dumps_for_Models/Fine_Tuned/pred_subs_Resnet50')
-pred_vgg19 = joblib.load('/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/a0409a00-8-dataset_dp/Dumps_for_Models/Fine_Tuned/pred_subs_Resnet50')
+pred_resnet50 = joblib.load('../pred_subs_Resnet50')
+pred_xception = joblib.load('../preds_subs_final_xception')
+pred_inception = joblib.load('../pred_test_xception')
+pred_vgg16 = joblib.load('../pred_subs_Resnet50')
+pred_vgg19 = joblib.load('../pred_subs_Resnet50')
 
 
 list_models = ['Resnet50', 'InceptionV3', 'VGG16', 'VGG19', 'Xception']
 path = '/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/a0409a00-8-dataset_dp/Dumps_for_Models/Fine_Tuned/'
-path_to_dump = '/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/a0409a00-8-dataset_dp/Dumps_for_Models/Fine_Tuned/Preds/'
+path_to_dump = '../Preds/'
 start = time.time()
 for elem in list_models:
     print elem
@@ -129,11 +129,13 @@ for elem in list_models:
 
 preds_subs_Resnet50, preds_subs_InceptionV3, preds_subs_VGG16, preds_subs_VGG19, preds_subs_Xception = preds_subs
 
+############Experiment 1########################
 preds_final = (0.683)*preds_subs_Resnet50+ (0.6691)*preds_subs_InceptionV3+ (0.59)* preds_subs_VGG16+ (0.62)*preds_subs_VGG19+ (0.788)*preds_subs_Xception
 
 preds_final = preds_final/(0.683+0.6691+0.59+0.62+0.788)  ##0.82390
 
 
+#####################Experiment 2#######################################
 preds_final = (4)*preds_subs_Resnet50+ (3)*preds_subs_InceptionV3+ (1)* preds_subs_VGG16+ (2)*preds_subs_VGG19+ (5)*preds_subs_Xception
 
 preds_final = preds_final/(15)  ##0.82621
@@ -154,7 +156,7 @@ def results_to_be_submitted(test,result_subs , path,name_of_file_sub):
     results_submitted = pd.merge(test, subs_pd , on = 'image_id')
     results_submitted.to_csv(filename,index = False)
 
-results_to_be_submitted(test = testx,result_subs = preds_subs_final  ,path = '/home/ubuntu/linux/Work/Deep_Learning/Product_Classification/Data/Submissions/',
+results_to_be_submitted(test = testx,result_subs = preds_subs_final  ,path = '../Submissions/',
                         name_of_file_sub = "results_weighted_avg_more_weights_ensemble") ##55.6% accuracy
 
 
